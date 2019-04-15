@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- bootstrap4-css ---->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <title>Список моих книг MyBook</title>
+</head>
+
+<body>
+    <div class="container-fluid">
+        <div class="row justify-content-sm-center">
+            {% if books %}
+            <div class='col-9'>
+                <h3>Список моих книг</h3>
+            </div>
+            <div class='col-3 '>
+                <a class="btn btn-light float-right" 
+                   href="{% url 'book_list:clear_session' %}">
+                Выйти
+                </a>
+            </div>
+            <div class='col-12'>
+                <table class="table table-hover table-sm">
+                    <thead class='thead-dark'>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Обложка</th>
+                            <th scope="col">Книга</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for book in books %}
+                        <tr>
+                            <th scope="row">{{ forloop.counter }}</th>
+                            <td><img src='{{ book.cover_img }}' 
+                                   class="img-thumbnail w-25"></td>
+                            <td>
+                                {{ book.author }}:<br>
+                                <a href='{{ book.book_url }}' 
+                                   target='_blank'>{{ book.book_name }}</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class='col-sm-7 align-self-center'>
+                {% if messages %}
+                <ul class="messages alert alert-danger">
+                    {% for message in messages %}
+                    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+                
+                <div class="card shadow p-3 mb-5 bg-white rounded">
+                    <div class="card-header">
+                        <h4>Список книг</h4>
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            Для получени списка Ваших книг введите логин и пароль сервиса mybook.ru
+                        </h5>
+                        <form class="form-horizontal" method="post">
+                            {% csrf_token %}
+                            <fieldset>
+                                {% for field in form %}
+                                <div class="form-group">
+                                    <label class="control-label">{{ field.label }}</label> 
+                                    <div class="controls">{{ field }}
+                                        {% if field.help_text %}
+                                        <small id="emailHelp" 
+                                               class="form-text text-muted">
+                                               {{ field.help_text }}
+                                        </small>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </fieldset>
+                            <div class="form-actions">
+                                <button type="submit" class="btn btn-primary" >Submit</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>
